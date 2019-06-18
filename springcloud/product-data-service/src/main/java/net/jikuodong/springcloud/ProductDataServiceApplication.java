@@ -19,8 +19,7 @@ import java.util.concurrent.TimeoutException;
 @EnableEurekaClient
 public class ProductDataServiceApplication
 {
-    public static void main( String[] args )
-    {
+    public static void main(String[] args) {
         int port = 0;
         int defaultPort = 8001;
         Future<Integer> future = ThreadUtil.execAsync(() ->{
@@ -41,16 +40,18 @@ public class ProductDataServiceApplication
             }
             return p;
         });
-        try {
-            port = future.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        try{
+            port=future.get(5,TimeUnit.SECONDS);
+        }
+        catch (InterruptedException | ExecutionException | TimeoutException e){
             port = defaultPort;
         }
-        if (NetUtil.isUsableLocalPort(port)) {
+
+        if(!NetUtil.isUsableLocalPort(port)) {
             System.err.printf("端口%d被占用了，无法启动%n", port );
             System.exit(1);
         }
+
         new SpringApplicationBuilder(ProductDataServiceApplication.class).properties("server.port=" + port).run(args);
-        System.out.println( "Hello World!" );
     }
 }
